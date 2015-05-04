@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html class="full" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TU-Do Board - Uebersicht</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="/static/css/footable/footable.core.css" rel="stylesheet" />
+  <link href="/static/css/willys-template.css" rel="stylesheet">
+
+  <!-- jQuery and Bootstrap JS -->
+  <script src="/static/js/jquery.min.js"></script>
+  <script src="/static/js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="/static/js/footable/footable.js" type="text/javascript"></script>
+
+  <!-- function for footable-->
+  <script type="text/javascript">
+  $(document).ready(function () {
+    $("table").footable();
+  });
+</script>
+</head>
+
+
+<body>
+  <!-- Navigtionbar -->
+  <nav class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">TU-Do Board</a>
+      </div>
+      <div id="navbar" class="collapse navbar-collapse">
+         <!-- navigation left-->
+        <ul class="nav navbar-nav">
+          <li class = "active"><a href="uebersicht.html">Übersicht</a></li>
+        </ul>
+         <!-- navigation right-->
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="impressum.html">Impressum</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- Body for Headline -->
+  <div class = "container">
+    <div class = "jumbotron myBackground">
+      <h1>Übersicht</h1>  
+      <p>Hier finden sie eine Übersicht über alle verfügbaren TU-Dos.</p> 
+    </div>
+  </div>
+
+  <!-- Body for Table-->
+  <div class = "container">
+    <div class = "well myBackground">
+      {% if latest_tasks_list %}
+      <table class="table toggle-circle-filled ">
+        <!-- table head-->
+        <thead>
+          <tr>
+            <th data-toggle = "true">Name</th>
+            <th data-hide = "phone, tablet">Status</th>  
+            <th >Fortschritt</th>
+            <th data-hide = "phone">Start</th> 
+            <th data-hide = "phone">Frist</th>
+            <th data-hide = "all">Beschreibung</th>  
+            <th data-hide="all"> Punkte</th>
+            <th> </th>
+          </tr>
+        </thead>
+
+        <!-- Table for content -->
+        <tbody>
+          {% for task in latest_tasks_list %}
+          <tr>
+            <!-- name -->
+            <td >{{ task.title }}</td>
+            <!-- priority -->
+            <td ><span class="label label-danger">{{ task.prio }}</span> </td>
+           
+            <!-- progress bar -->
+            <td >
+              <div class="progress">
+                <div class="progress-bar progress-bar-default" role="progressbar" aria-valuenow="{{ task.progress }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ task.progress }}%">
+                  <span class="sr-only">{{ task.progress }}% Complete</span>
+                    {{ task.progress }}% 
+                </div>
+              </div>
+            </td>
+            <!-- date -->
+            <td >{{ task.start_date }}</td>
+            <td >{{ task.due_date }}</td>
+             <!-- description -->
+            <td >{{ task.desc }}</td>
+            <td></td>
+            <!-- buttons -->
+            <td>
+              <span class="pull-right">
+                <button type="button" class="btn btn-xs" data-toggle="modal" data-target="#toDoBearbeiten">
+                  <span class="glyphicon glyphicon-pencil"></span> 
+                </button>
+                <button type="button" class="btn  btn-xs"> 
+                  <span class="glyphicon glyphicon-trash"></span> 
+                </button>
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+    <p>No TODOs to display, try adding a new one.</p>
+	  {% endif %}
+      <button type="button" class="btn btn-default" data-toggle="modal" data-target="#toDoEinfügen">TU-Do Einfügen</button>
+    </div>
+  </div>
+
+  <!-- Modal für TU-Do infügen-->
+  <div id="toDoEinfügen" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">TU-Do einfügen</h4>
+        </div>
+
+        <div class="modal-body">
+          <div class = "row">
+
+            <div class = "col-sm-6">
+              <label for="name1">Name:</label>
+              <input type="text" class="form-control" id="nameAdd">
+            </div>
+
+            <div class = "col-sm-3">
+              <div class="form-group">
+                <label for="frist1">Frist:</label>
+                <input type="text" class="form-control" id="timeAdd">
+              </div>
+            </div>
+
+            <div class = "col-sm-3">
+              <div class="form-group">
+                <label for="status1">Status:</label>
+                <select class="form-control" id="statusAdd">
+                  <option>keine Auswahl</option>
+                  <option>Niedrig</option>
+                  <option>Mittel</option>
+                  <option>Hoch</option>
+                </select>
+              </div>
+            </div>
+
+            <div class = "col-sm-12">
+              <div class="form-group">
+                <label for="beschreibung1">Beschreibung:</label>
+                <textarea class="form-control" rows="5" id="descriptionAdd" placeholder="Geben sie eine Beschreibung ab"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <span class="pull-left"><label for="fortschritt1">Fortschritt bestimmen durch:</label></span>
+                <select class="form-control" id="progressAdd">
+                  <option>Manuell</option>
+                  <option>Punkte</option>
+                  <option>Start- und Enddatum</option>
+                </select>
+              </div>
+            </div>
+            <div class = "col-sm-6">
+              <label for="null1">&nbsp;</label>
+              <input type="text" class="form-control" id="progresscalcAdd" placeholder="% oder Datum">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Einfügen</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Modal für TU-Do bearbeiten -->
+
+  <div id="toDoBearbeiten" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">TU-Do bearbeiten</h4>
+        </div>
+
+        <div class="modal-body">
+          <div class = "row">
+
+            <div class = "col-sm-6">
+              <label for="name2">Name:</label>
+              <input type="text" class="form-control" id="nameChange">
+            </div>
+
+            <div class = "col-sm-3">
+              <div class="form-group">
+                <label for="frist2">Frist:</label>
+                <input type="text" class="form-control" id="timeChange">
+              </div>
+            </div>
+
+            <div class = "col-sm-3">
+              <div class="form-group">
+                <label for="status2">Status:</label>
+                <select class="form-control" id="statusChange">
+                  <option>keine Auswahl</option>
+                  <option>Niedrig</option>
+                  <option>Mittel</option>
+                  <option>Hoch</option>
+                </select>
+              </div>
+            </div>
+
+            <div class = "col-sm-12">
+              <div class="form-group">
+                <label for="beschreibung2">Beschreibung:</label>
+                <textarea class="form-control" rows="5" id="descriptionChange" placeholder="Geben sie eine Beschreibung ab"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <span class="pull-left"><label for="fortschritt2">Fortschritt bestimmen durch:</label></span>
+                <select class="form-control" id="progressChange">
+                  <option>Manuell</option>
+                  <option>Punkte</option>
+                  <option>Start- und Enddatum</option>
+                </select>
+              </div>
+            </div>
+            <div class = "col-sm-6">
+              <label for="null2">&nbsp;</label>
+              <input type="text" class="form-control" id="progressChange" placeholder="% oder Datum">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Aktualisieren</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Modal für Punkt Einfügen-->
+  <div id="einfügen" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Punkt einfügen</h4>
+        </div>
+        <div class="modal-body">
+          <div class ="row">
+            <div class = "col-sm-8">
+              <label for="name1">Punktname:</label>
+              <input type="text" class="form-control" id="name1">
+            </div>
+            <div class = "col-sm-4">
+              <div class="form-group">
+                <label for="stufe1">Stufe:</label>
+                <select class="form-control" id="stufe1">
+                  <option>offen</option>
+                  <option>wird bearbeitet</option>
+                  <option>fertig</option>
+                </select>
+              </div>
+            </div>
+            <div class = "col-sm-8">
+              <label for="bearbeiter1">Bearbeiter:</label>
+              <input type="text" class="form-control" id="bearbeiter1">
+            </div>
+            <div class = "col-sm-4">
+              <label for="datum1">Datum:</label>
+              <input type="text" class="form-control" id="datum1">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Einfügen</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal für Punkt bearbeiten-->
+  <div id="bearbeiten" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Punkt bearbeiten</h4>
+        </div>
+        <div class="modal-body">
+          <div class ="row">
+            <div class = "col-sm-8">
+              <label for="name2">Punktname:</label>
+              <input type="text" class="form-control" id="name2">
+            </div>
+            <div class = "col-sm-4">
+              <div class="form-group">
+                <label for="stufe2">Stufe:</label>
+                <select class="form-control" id="stufe2">
+                  <option>offen</option>
+                  <option>wird bearbeitet</option>
+                  <option>fertig</option>
+                </select>
+              </div>
+            </div>
+            <div class = "col-sm-8">
+              <label for="bearbeiter2">Bearbeiter:</label>
+              <input type="text" class="form-control" id="bearbeiter2">
+            </div>
+            <div class = "col-sm-4">
+              <label for="datum2">Datum:</label>
+              <input type="text" class="form-control" id="datum2">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Aktualisieren</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+</body>
+</html>
