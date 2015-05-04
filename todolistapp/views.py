@@ -11,3 +11,8 @@ def index(request):
     })
     
     return HttpResponse(template.render(context))
+    
+def impressum(request):
+    template = loader.get_template('impressum.html')
+    
+    return HttpResponse(template.render())
